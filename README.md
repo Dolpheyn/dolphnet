@@ -21,8 +21,9 @@ Send it to a file or clipboard and paste to [dillinger.io](https://dillinger.io/
 markdown.
 
 ```bash
-$ python3 -m examples.perceptron > xclip -selection c
 $ python3 -m examples.perceptron > output.md
+OR
+$ python3 -m examples.perceptron > xclip -selection c
 ```
 
 ### Example Rendered Outputs
