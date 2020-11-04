@@ -25,8 +25,7 @@ $ python3 -m examples.perceptron > xclip -selection c
 $ python3 -m examples.perceptron > output.md
 ```
 
-**Example Rendered Outputs***
-===
+### Example Rendered Outputs
 
 1. [OR operator - Binary Input, Bipolar Target](examples/perceptron_or.md)
 1. [AND operator - Binary Input, Bipolar Target](examples/perceptron_and.md)
