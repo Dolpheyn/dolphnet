@@ -17,7 +17,7 @@ calling the train method on any model.
 $ python3 -m examples.perceptron
 ```
 
-Send it to a file or clipboard and paste to dilinger.io to see the rendered
+Send it to a file or clipboard and paste to [dillinger.io](https://dillinger.io/) to see the rendered
 markdown.
 
 ```bash
