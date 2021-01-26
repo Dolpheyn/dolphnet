@@ -1,4 +1,3 @@
-# from dolphnet.perceptron import Perceptron
 from dolphnet.perceptron import Perceptron
 
 ALPHA = 1
