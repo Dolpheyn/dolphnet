@@ -1,4 +1,4 @@
-# Dolphnet
+# Dolphnet :dolphin:
 
 Some ML models' implementation for learning purposes.
 
