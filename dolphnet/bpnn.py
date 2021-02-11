@@ -33,15 +33,11 @@ class BPNN:
             row = prev_layer_outputs
 
     def __calculate_output_layer_deltas(self, layer):
-        deltas = list()
         for j, neuron in enumerate(layer):
-            t = self.Y_train[j]
+            t = self.y_train[j]
             y = neuron['output']
 
-            delta = (t - y) * y * (1 - y)
-            deltas.append(delta)
-
-        return deltas
+            neuron['delta'] = (t - y) * y * (1 - y)
 
     def __calculate_non_output_layer_deltas(self, layer, prev_layer):
         deltas = list()
@@ -52,39 +48,28 @@ class BPNN:
 
             delta_in = dot(prev_to_cur_neuron_weights, prev_neuron_deltas)
 
-            delta = delta_in * neuron['output'] * (1 - neuron['output'])
-            deltas.append(delta)
-        return deltas
-
-    def __calculate_layer_deltas(self, layer, prev_layer):
-        if prev_layer == None:
-            return self.__calculate_output_layer_deltas(layer)
-
-        return self.__calculate_non_output_layer_deltas(layer, prev_layer)
+            neuron['delta'] = delta_in * neuron['output'] * (1 - neuron['output'])
 
     def __backpropagate_errors(self):
-        for i, layer in enumerate(reversed(self.network)):
+        for i, layer in reversed(enumerate(self.network)):
             # output layer is index 0 because we're
             # enumerating the network in reversed order.
-            is_output_layer = i == 0
+            n_layers = len(self.network)
+            is_output_layer = i == (n_layers - 1)
 
             if is_output_layer:
-                deltas =  self.__calculate_layer_deltas(layer, prev_layer=None)
+                self.__calculate_output_layer_deltas(layer)
             else:
-                n_layers = len(self.network)
-                prev_layer = self.network[n_layers - i]
-                deltas = self.__calculate_layer_deltas(layer, prev_layer)
-
-            for j, neuron in enumerate(layer):
-                neuron['delta'] = deltas[j]
+                prev_layer = self.network[i + 1]
+                self.__calculate_non_output_layer_deltas(layer, prev_layer)
 
     def __update_weights(self, row):
         for i, layer in enumerate(self.network):
             is_input_layer = i == 0
 
-            if is_input_layer:
-                inputs = row
-            else:
+            inputs = row
+
+            if not is_input_layer:
                 prev_layer = self.network[i - 1]
                 inputs = [neuron['output'] for neuron in prev_layer]
 
@@ -93,9 +78,9 @@ class BPNN:
                     weight_change = neuron['delta'] * self.ALPHA * input_val
                     neuron['weights'][j] += weight_change
 
-    def fit(self, X_train, Y_train, learning_rate, n_epoch):
+    def fit(self, X_train, y_train, learning_rate, n_epoch):
         self.X_train = X_train
-        self.Y_train = Y_train
+        self.y_train = y_train
         self.ALPHA = learning_rate
 
         self.sum_squared_errors = list()
@@ -108,7 +93,7 @@ class BPNN:
 
                 output_layer = self.network[-1]
                 outputs = [neuron['output'] for neuron in output_layer]
-                sum_squared_error += sum([(self.Y_train[i] - outputs[i])**2 for i in range(len(self.Y_train))])
+                sum_squared_error += sum([(self.y_train[i] - outputs[i])**2 for i in range(len(self.y_train))])
 
             self.sum_squared_errors.append(sum_squared_error)
 
